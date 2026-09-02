@@ -208,6 +208,75 @@ function getOutputFilename(originalName, newExtension) {
 
   return `${baseName}.${newExtension}`;
 }
+// ========================================
+// GEÇİCİ DOSYA TEMİZLEME
+// ========================================
+
+function cleanupTempDir(tempDir) {
+  if (!tempDir) return;
+
+  try {
+    fs.rmSync(tempDir, {
+      recursive: true,
+      force: true,
+    });
+
+    console.log(
+      "Geçici dosyalar temizlendi:",
+      tempDir
+    );
+  } catch (error) {
+    console.error(
+      "Geçici dosya temizleme hatası:",
+      error.message
+    );
+  }
+}
+// ========================================
+// ESKİ GEÇİCİ DOSYALARI TEMİZLE
+// SUNUCU BAŞLARKEN ÇALIŞIR
+// ========================================
+
+function cleanupOldTempDirs() {
+  const tempBase = os.tmpdir();
+
+  try {
+    const files = fs.readdirSync(tempBase);
+
+    for (const file of files) {
+      if (!file.startsWith("dosyadonusum-")) {
+        continue;
+      }
+
+      const fullPath = path.join(
+        tempBase,
+        file
+      );
+
+      try {
+        fs.rmSync(fullPath, {
+          recursive: true,
+          force: true,
+        });
+
+        console.log(
+          "Eski geçici dosya temizlendi:",
+          fullPath
+        );
+      } catch (error) {
+        console.error(
+          "Eski geçici dosya silinemedi:",
+          error.message
+        );
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Geçici klasör temizleme hatası:",
+      error.message
+    );
+  }
+}
 
 const app = express();
 
@@ -2051,6 +2120,9 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+// Sunucu başlarken eski geçici dosyaları temizle
+cleanupOldTempDirs();
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("=================================");

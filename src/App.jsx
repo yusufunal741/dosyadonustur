@@ -220,161 +220,187 @@ function MainApp() {
   }, [preview]);
 
   async function convertFile() {
-    if (!file) {
-      setError("Lütfen önce bir dosya seç.");
-      return;
-    }
-
-    const extension = getExtension(file.name);
-
-    let endpoint = "";
-    let outputName = "";
-
-    if (
-      (extension === "jpg" || extension === "jpeg") &&
-      format === "PNG"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/jpg-to-png";
-      outputName = "donusturulmus.png";
-    } else if (
-      extension === "png" &&
-      format === "JPG"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/png-to-jpg";
-      outputName = "donusturulmus.jpg";
-    } else if (
-      (extension === "jpg" ||
-        extension === "jpeg" ||
-        extension === "png") &&
-      format === "PDF"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/image-to-pdf";
-      outputName = "donusturulmus.pdf";
-    } else if (
-      extension === "pdf" &&
-      format === "JPG"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-jpg";
-      outputName = "donusturulmus-jpg.zip";
-    } else if (
-      extension === "pdf" &&
-      format === "PNG"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-png";
-      outputName = "donusturulmus-png.zip";
-    } else if (
-      extension === "pdf" &&
-      format === "DOCX"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-docx";
-      outputName = "donusturulmus.docx";
-    } else if (
-      extension === "pdf" &&
-      format === "TXT"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-txt";
-      outputName = "donusturulmus.txt";
-    } else if (
-      extension === "docx" &&
-      format === "PDF"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/docx-to-pdf";
-      outputName = "donusturulmus.pdf";
-    } else if (
-      extension === "pptx" &&
-      format === "PDF"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/pptx-to-pdf";
-      outputName = "donusturulmus.pdf";
-    } else if (
-      extension === "xlsx" &&
-      format === "PDF"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/xlsx-to-pdf";
-      outputName = "donusturulmus.pdf";
-    } else if (
-      (extension === "heic" ||
-        extension === "heif") &&
-      format === "JPG"
-    ) {
-      endpoint = "https://dosyadonustur-backend2.onrender.com/convert/heic-to-jpg";
-      outputName = "donusturulmus.jpg";
-    } else {
-      setError("Bu dönüşüm henüz aktif değil.");
-      return;
-    }
-
-    try {
-      setConverting(true);
-      setSuccess(false);
-
-      startProgressAnimation();
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        let errorMessage =
-          "Sunucu hata verdi: " + response.status;
-
-        try {
-          const errorData = await response.json();
-
-          if (errorData?.error) {
-            errorMessage = errorData.error;
-          }
-        } catch {}
-
-        throw new Error(errorMessage);
-      }
-
-      const blob = await response.blob();
-
-      stopProgressAnimation();
-      setProgress(95);
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, 600);
-      });
-
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = outputName;
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
-
-      setProgress(100);
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
-
-      setSuccess(true);
-    } catch (error) {
-      console.error(error);
-
-      stopProgressAnimation();
-      setProgress(0);
-      setSuccess(false);
-
-      setError(
-        error.message || "Bir hata oluştu. Lütfen tekrar deneyin."
-      );
-    } finally {
-      setConverting(false);
-    }
+  if (!file) {
+    setError("Lütfen önce bir dosya seç.");
+    return;
   }
+
+  const extension = getExtension(file.name);
+
+  let endpoint = "";
+  let newExtension = "";
+
+  if (
+    (extension === "jpg" || extension === "jpeg") &&
+    format === "PNG"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/jpg-to-png";
+    newExtension = "png";
+  } else if (
+    extension === "png" &&
+    format === "JPG"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/png-to-jpg";
+    newExtension = "jpg";
+  } else if (
+    (extension === "jpg" ||
+      extension === "jpeg" ||
+      extension === "png") &&
+    format === "PDF"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/image-to-pdf";
+    newExtension = "pdf";
+  } else if (
+    extension === "pdf" &&
+    format === "JPG"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-jpg";
+    newExtension = "zip";
+  } else if (
+    extension === "pdf" &&
+    format === "PNG"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-png";
+    newExtension = "zip";
+  } else if (
+    extension === "pdf" &&
+    format === "DOCX"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-docx";
+    newExtension = "docx";
+  } else if (
+    extension === "pdf" &&
+    format === "TXT"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-txt";
+    newExtension = "txt";
+  } else if (
+    extension === "docx" &&
+    format === "PDF"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/docx-to-pdf";
+    newExtension = "pdf";
+  } else if (
+    extension === "pptx" &&
+    format === "PDF"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/pptx-to-pdf";
+    newExtension = "pdf";
+  } else if (
+    extension === "xlsx" &&
+    format === "PDF"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/xlsx-to-pdf";
+    newExtension = "pdf";
+  } else if (
+    (extension === "heic" ||
+      extension === "heif") &&
+    format === "JPG"
+  ) {
+    endpoint =
+      "https://dosyadonustur-backend2.onrender.com/convert/heic-to-jpg";
+    newExtension = "jpg";
+  } else {
+    setError("Bu dönüşüm henüz aktif değil.");
+    return;
+  }
+
+  try {
+    setConverting(true);
+    setSuccess(false);
+    setError("");
+
+    startProgressAnimation();
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      let errorMessage =
+        "Sunucu hata verdi: " + response.status;
+
+      try {
+        const errorData = await response.json();
+
+        if (errorData?.error) {
+          errorMessage = errorData.error;
+        }
+      } catch {}
+
+      throw new Error(errorMessage);
+    }
+
+    const blob = await response.blob();
+
+    stopProgressAnimation();
+    setProgress(95);
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 600);
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    // Orijinal dosya adını koru
+    const originalName = file.name;
+    const lastDot = originalName.lastIndexOf(".");
+
+    const baseName =
+      lastDot !== -1
+        ? originalName.substring(0, lastDot)
+        : originalName;
+
+    const outputName = `${baseName}.${newExtension}`;
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = outputName;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+
+    setProgress(100);
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+
+    setSuccess(true);
+
+  } catch (error) {
+    console.error(error);
+
+    stopProgressAnimation();
+    setProgress(0);
+    setSuccess(false);
+
+    setError(
+      error.message ||
+      "Bir hata oluştu. Lütfen tekrar deneyin."
+    );
+  } finally {
+    setConverting(false);
+  }
+}
 
   function removeFile() {
     stopProgressAnimation();

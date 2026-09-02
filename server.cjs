@@ -210,7 +210,6 @@ const upload = multer({
 // ========================================
 
 const PYTHON_PATH = "python3";
-  "C:\\Users\\unaly\\AppData\\Local\\Programs\\Python\\Python313\\python.exe";
 
 const PYTHON_SCRIPT = path.join(
   __dirname,
@@ -222,7 +221,7 @@ const PYTHON_SCRIPT = path.join(
 // ========================================
 
 const SOFFICE_PATH = "libreoffice";
-  "C:\\Program Files\\LibreOffice\\program\\soffice.exe";
+ 
 
 // ========================================
 // JPG -> PNG
@@ -741,11 +740,7 @@ app.post(
   return;
 }
 
-      if (!fs.existsSync(SOFFICE_PATH)) {
-        return res.status(500).json({
-          error: "LibreOffice bulunamadı.",
-        });
-      }
+      
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -1009,11 +1004,7 @@ app.post(
   return;
 }
 
-      if (!fs.existsSync(SOFFICE_PATH)) {
-        return res.status(500).json({
-          error: "LibreOffice bulunamadı.",
-        });
-      }
+      
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -1185,11 +1176,7 @@ app.post(
   return;
 }
 
-      if (!fs.existsSync(SOFFICE_PATH)) {
-        return res.status(500).json({
-          error: "LibreOffice bulunamadı.",
-        });
-      }
+      
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -1361,16 +1348,7 @@ app.post(
   return;
 }
 
-      if (!fs.existsSync(PYTHON_PATH)) {
-        console.error(
-          "Python bulunamadı:",
-          PYTHON_PATH
-        );
-
-        return res.status(500).json({
-          error: "Python bulunamadı.",
-        });
-      }
+      
 
       if (!fs.existsSync(PYTHON_SCRIPT)) {
         console.error(

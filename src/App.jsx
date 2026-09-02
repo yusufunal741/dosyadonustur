@@ -234,13 +234,13 @@ function MainApp() {
       (extension === "jpg" || extension === "jpeg") &&
       format === "PNG"
     ) {
-      endpoint = "http://localhost:5000/convert/jpg-to-png";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/jpg-to-png";
       outputName = "donusturulmus.png";
     } else if (
       extension === "png" &&
       format === "JPG"
     ) {
-      endpoint = "http://localhost:5000/convert/png-to-jpg";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/png-to-jpg";
       outputName = "donusturulmus.jpg";
     } else if (
       (extension === "jpg" ||
@@ -248,56 +248,56 @@ function MainApp() {
         extension === "png") &&
       format === "PDF"
     ) {
-      endpoint = "http://localhost:5000/convert/image-to-pdf";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/image-to-pdf";
       outputName = "donusturulmus.pdf";
     } else if (
       extension === "pdf" &&
       format === "JPG"
     ) {
-      endpoint = "http://localhost:5000/convert/pdf-to-jpg";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/pdf-to-jpg";
       outputName = "donusturulmus-jpg.zip";
     } else if (
       extension === "pdf" &&
       format === "PNG"
     ) {
-      endpoint = "http://localhost:5000/convert/pdf-to-png";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/pdf-to-png";
       outputName = "donusturulmus-png.zip";
     } else if (
       extension === "pdf" &&
       format === "DOCX"
     ) {
-      endpoint = "http://localhost:5000/convert/pdf-to-docx";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/pdf-to-docx";
       outputName = "donusturulmus.docx";
     } else if (
       extension === "pdf" &&
       format === "TXT"
     ) {
-      endpoint = "http://localhost:5000/convert/pdf-to-txt";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/pdf-to-txt";
       outputName = "donusturulmus.txt";
     } else if (
       extension === "docx" &&
       format === "PDF"
     ) {
-      endpoint = "http://localhost:5000/convert/docx-to-pdf";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/docx-to-pdf";
       outputName = "donusturulmus.pdf";
     } else if (
       extension === "pptx" &&
       format === "PDF"
     ) {
-      endpoint = "http://localhost:5000/convert/pptx-to-pdf";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/pptx-to-pdf";
       outputName = "donusturulmus.pdf";
     } else if (
       extension === "xlsx" &&
       format === "PDF"
     ) {
-      endpoint = "http://localhost:5000/convert/xlsx-to-pdf";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/xlsx-to-pdf";
       outputName = "donusturulmus.pdf";
     } else if (
       (extension === "heic" ||
         extension === "heif") &&
       format === "JPG"
     ) {
-      endpoint = "http://localhost:5000/convert/heic-to-jpg";
+      endpoint = "https://dosyadonustur-backend.onrender.com/convert/heic-to-jpg";
       outputName = "donusturulmus.jpg";
     } else {
       setError("Bu dönüşüm henüz aktif değil.");

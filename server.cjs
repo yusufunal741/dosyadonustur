@@ -2031,9 +2031,11 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.listen(5000, () => {
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
   console.log("=================================");
   console.log("Dönüştürme sunucusu çalışıyor!");
-  console.log("http://localhost:5000");
+  console.log(`Port: ${PORT}`);
   console.log("=================================");
 });

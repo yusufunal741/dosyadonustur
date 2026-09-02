@@ -209,7 +209,7 @@ const upload = multer({
 // PYTHON AYARLARI
 // ========================================
 
-const PYTHON_PATH =
+const PYTHON_PATH = "python3";
   "C:\\Users\\unaly\\AppData\\Local\\Programs\\Python\\Python313\\python.exe";
 
 const PYTHON_SCRIPT = path.join(
@@ -221,7 +221,7 @@ const PYTHON_SCRIPT = path.join(
 // LIBREOFFICE AYARI
 // ========================================
 
-const SOFFICE_PATH =
+const SOFFICE_PATH = "libreoffice";
   "C:\\Program Files\\LibreOffice\\program\\soffice.exe";
 
 // ========================================

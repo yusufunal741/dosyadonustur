@@ -710,13 +710,21 @@ function MainApp() {
             {converting && (
               <>
 
-                <div className="upload-icon">
-                  ⚙️
-                </div>
+                <div className="conversion-animation">
 
-                <h2>
-                  ⏳ Dönüştürülüyor...
-                </h2>
+  <div className="gear-icon">
+    ⚙️
+  </div>
+
+</div>
+
+<div className="converting-title">
+  <div className="hourglass-icon">
+    ⏳
+  </div>
+
+  <h2>Dönüştürülüyor...</h2>
+</div>
 
                 <p>
                   {file.name}

@@ -1897,3 +1897,203 @@ body.dark-mode .about-content p {
     gap: 12px;
   }
 }
+/* =========================
+   DÖNÜŞTÜRME ANİMASYONU
+========================= */
+
+.conversion-animation {
+  position: relative;
+  width: 120px;
+  height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+/* ÇARK */
+
+.gear-icon {
+  width: 78px;
+  height: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    #f0edff,
+    #e6e1ff
+  );
+
+  font-size: 38px;
+
+  box-shadow:
+    0 10px 25px rgba(108, 92, 231, 0.15);
+
+  animation: gearRotate 2.2s linear infinite;
+}
+
+/* KUM SAATİ */
+
+.conversion-animation {
+  width: 90px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+}
+
+.gear-icon {
+  width: 78px;
+  height: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    #f0edff,
+    #e6e1ff
+  );
+
+  font-size: 38px;
+
+  box-shadow:
+    0 10px 25px rgba(108, 92, 231, 0.15);
+
+  animation: gearRotate 2.2s linear infinite;
+}
+
+
+/* BAŞLIK + KUM SAATİ */
+
+.converting-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+.converting-title h2 {
+  margin: 0;
+}
+
+.converting-title .hourglass-icon {
+  position: static;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+
+  border-radius: 11px;
+
+  font-size: 23px;
+
+  box-shadow:
+    0 6px 15px rgba(39, 35, 77, 0.12);
+
+  border: 1px solid #e8e8f0;
+
+  animation: hourglassFloat 1.4s ease-in-out infinite;
+}
+
+
+/* ÇARK */
+
+@keyframes gearRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* KUM SAATİ */
+
+@keyframes hourglassFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+
+/* DARK MODE */
+
+body.dark-mode .gear-icon {
+  background: linear-gradient(
+    135deg,
+    #29244b,
+    #332d59
+  );
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .converting-title .hourglass-icon {
+  background: #22232e;
+  border-color: #373946;
+
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================
+   MOBİL
+========================= */
+
+@media (max-width: 700px) {
+
+  .conversion-animation {
+    width: 80px;
+    height: 72px;
+    margin-bottom: 18px;
+  }
+
+  .gear-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 34px;
+  }
+
+  .converting-title {
+    gap: 8px;
+  }
+
+  .converting-title h2 {
+    font-size: 21px;
+  }
+
+  .converting-title .hourglass-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 21px;
+    border-radius: 10px;
+  }
+
+}

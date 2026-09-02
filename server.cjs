@@ -160,6 +160,7 @@ async function validateFile(buffer, extension) {
     return false;
   }
 }
+
 async function checkUploadedFile(req, res) {
   if (!req.file) {
     res.status(400).json({
@@ -194,6 +195,20 @@ async function checkUploadedFile(req, res) {
 
   return true;
 }
+
+// ========================================
+// ORİJİNAL DOSYA ADINI KORUMA
+// ========================================
+
+function getOutputFilename(originalName, newExtension) {
+  const baseName = path.basename(
+    originalName,
+    path.extname(originalName)
+  );
+
+  return `${baseName}.${newExtension}`;
+}
+
 const app = express();
 
 app.use(cors());
@@ -221,7 +236,6 @@ const PYTHON_SCRIPT = path.join(
 // ========================================
 
 const SOFFICE_PATH = "libreoffice";
- 
 
 // ========================================
 // JPG -> PNG
@@ -233,8 +247,8 @@ app.post(
   async (req, res) => {
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       const pngBuffer = await sharp(req.file.buffer)
         .png()
@@ -242,8 +256,10 @@ app.post(
 
       res.set({
         "Content-Type": "image/png",
-        "Content-Disposition":
-          'attachment; filename="donusturulmus.png"',
+        "Content-Disposition": `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "png"
+        )}"`,
       });
 
       res.send(pngBuffer);
@@ -267,8 +283,8 @@ app.post(
   async (req, res) => {
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       const jpgBuffer = await sharp(req.file.buffer)
         .jpeg()
@@ -276,8 +292,10 @@ app.post(
 
       res.set({
         "Content-Type": "image/jpeg",
-        "Content-Disposition":
-          'attachment; filename="donusturulmus.jpg"',
+        "Content-Disposition": `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "jpg"
+        )}"`,
       });
 
       res.send(jpgBuffer);
@@ -290,6 +308,7 @@ app.post(
     }
   }
 );
+
 // ========================================
 // HEIC / HEIF -> JPG
 // ========================================
@@ -300,8 +319,8 @@ app.post(
   async (req, res) => {
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       console.log("");
       console.log("=================================");
@@ -330,7 +349,10 @@ app.post(
 
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="donusturulmus.jpg"'
+        `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "jpg"
+        )}"`
       );
 
       res.setHeader(
@@ -354,6 +376,7 @@ app.post(
     }
   }
 );
+
 // ========================================
 // IMAGE -> PDF
 // ========================================
@@ -364,8 +387,8 @@ app.post(
   async (req, res) => {
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       const imageBuffer = await sharp(req.file.buffer)
         .jpeg()
@@ -389,8 +412,10 @@ app.post(
 
         res.set({
           "Content-Type": "application/pdf",
-          "Content-Disposition":
-            'attachment; filename="donusturulmus.pdf"',
+          "Content-Disposition": `attachment; filename="${getOutputFilename(
+            req.file.originalname,
+            "pdf"
+          )}"`,
         });
 
         res.send(pdfBuffer);
@@ -425,8 +450,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       console.log("");
       console.log("=================================");
@@ -455,10 +480,10 @@ app.post(
       );
 
       const archive = new ZipArchive({
-  zlib: {
-    level: 6,
-  },
-});
+        zlib: {
+          level: 6,
+        },
+      });
 
       const archivePromise = new Promise(
         (resolve, reject) => {
@@ -524,8 +549,10 @@ app.post(
 
       res.set({
         "Content-Type": "application/zip",
-        "Content-Disposition":
-          'attachment; filename="donusturulmus-jpg.zip"',
+        "Content-Disposition": `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "zip"
+        )}"`,
         "Content-Length":
           zipBuffer.length,
       });
@@ -582,8 +609,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       console.log("");
       console.log("=================================");
@@ -611,11 +638,11 @@ app.post(
         outputPath
       );
 
-     const archive = new ZipArchive({
-  zlib: {
-    level: 6,
-  },
-});
+      const archive = new ZipArchive({
+        zlib: {
+          level: 6,
+        },
+      });
 
       const archivePromise = new Promise(
         (resolve, reject) => {
@@ -679,8 +706,10 @@ app.post(
 
       res.set({
         "Content-Type": "application/zip",
-        "Content-Disposition":
-          'attachment; filename="donusturulmus-png.zip"',
+        "Content-Disposition": `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "zip"
+        )}"`,
         "Content-Length":
           zipBuffer.length,
       });
@@ -737,10 +766,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
-
-      
+        return;
+      }
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -925,8 +952,10 @@ app.post(
             res.set({
               "Content-Type":
                 "application/pdf",
-              "Content-Disposition":
-                'attachment; filename="donusturulmus.pdf"',
+              "Content-Disposition": `attachment; filename="${getOutputFilename(
+                req.file.originalname,
+                "pdf"
+              )}"`,
               "Content-Length":
                 pdfBuffer.length,
             });
@@ -1001,10 +1030,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
-
-      
+        return;
+      }
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -1100,8 +1127,10 @@ app.post(
             res.set({
               "Content-Type":
                 "application/pdf",
-              "Content-Disposition":
-                'attachment; filename="donusturulmus.pdf"',
+              "Content-Disposition": `attachment; filename="${getOutputFilename(
+                req.file.originalname,
+                "pdf"
+              )}"`,
               "Content-Length":
                 pdfBuffer.length,
             });
@@ -1173,10 +1202,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
-
-      
+        return;
+      }
 
       tempDir = fs.mkdtempSync(
         path.join(os.tmpdir(), "dosyadonusum-")
@@ -1272,8 +1299,10 @@ app.post(
             res.set({
               "Content-Type":
                 "application/pdf",
-              "Content-Disposition":
-                'attachment; filename="donusturulmus.pdf"',
+              "Content-Disposition": `attachment; filename="${getOutputFilename(
+                req.file.originalname,
+                "pdf"
+              )}"`,
               "Content-Length":
                 pdfBuffer.length,
             });
@@ -1345,10 +1374,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
-
-      
+        return;
+      }
 
       if (!fs.existsSync(PYTHON_SCRIPT)) {
         console.error(
@@ -1562,7 +1589,10 @@ app.post(
 
             res.setHeader(
               "Content-Disposition",
-              'attachment; filename="donusturulmus.docx"'
+              `attachment; filename="${getOutputFilename(
+                req.file.originalname,
+                "docx"
+              )}"`
             );
 
             res.setHeader(
@@ -1636,6 +1666,7 @@ app.post(
     }
   }
 );
+
 // ========================================
 // PDF -> TXT
 // ========================================
@@ -1648,8 +1679,8 @@ app.post(
 
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       console.log("");
       console.log("=================================");
@@ -1851,7 +1882,10 @@ print("PDF -> TXT BAŞARILI!")
 
             res.setHeader(
               "Content-Disposition",
-              'attachment; filename="donusturulmus.txt"'
+              `attachment; filename="${getOutputFilename(
+                req.file.originalname,
+                "txt"
+              )}"`
             );
 
             res.setHeader(
@@ -1915,6 +1949,7 @@ print("PDF -> TXT BAŞARILI!")
     }
   }
 );
+
 // ========================================
 // JPG / PNG -> HEIC
 // ========================================
@@ -1925,8 +1960,8 @@ app.post(
   async (req, res) => {
     try {
       if (!(await checkUploadedFile(req, res))) {
-  return;
-}
+        return;
+      }
 
       console.log("");
       console.log("=================================");
@@ -1956,7 +1991,10 @@ app.post(
 
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="donusturulmus.heic"'
+        `attachment; filename="${getOutputFilename(
+          req.file.originalname,
+          "heic"
+        )}"`
       );
 
       res.setHeader(
@@ -1980,16 +2018,19 @@ app.post(
     }
   }
 );
+
 // ========================================
 // SERVER
 // ========================================
+
 // Multer hata yönetimi
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
       return res.status(413).json({
-        error: "Dosya çok büyük. Maksimum dosya boyutu 50 MB.",
+        error:
+          "Dosya çok büyük. Maksimum dosya boyutu 50 MB.",
       });
     }
 

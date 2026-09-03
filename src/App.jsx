@@ -188,19 +188,35 @@ function MainApp() {
   }
 
   function startProgressAnimation() {
-    setProgress(5);
+  setProgress(3);
 
-    progressTimer.current = setInterval(() => {
-      setProgress((current) => {
-        if (current >= 90) return current;
+  progressTimer.current = setInterval(() => {
+    setProgress((current) => {
+      // İlk aşama: yükleme / hazırlık
+      if (current < 25) {
+        return current + 2;
+      }
 
-        if (current < 30) return current + 2;
-        if (current < 60) return current + 1;
+      // İkinci aşama: sunucuda işlem yapılıyor
+      if (current < 50) {
+        return current + 1;
+      }
 
+      // Üçüncü aşama: işlem devam ediyor
+      if (current < 70) {
         return current + 0.5;
-      });
-    }, 150);
-  }
+      }
+
+      // İşlem uzun sürerse burada yavaşlar
+      // ve 90'da sabitlenir.
+      if (current < 90) {
+        return current + 0.2;
+      }
+
+      return current;
+    });
+  }, 150);
+}
 
   function stopProgressAnimation() {
     if (progressTimer.current) {
@@ -220,182 +236,319 @@ function MainApp() {
   }, [preview]);
 
   async function convertFile() {
-  if (!file) {
-    setError("Lütfen önce bir dosya seç.");
-    return;
-  }
-
-  const extension = getExtension(file.name);
+  if (!file) return;
 
   let endpoint = "";
   let newExtension = "";
 
+  const type = file.type;
+  const name = file.name.toLowerCase();
+
+  // JPG → PNG
   if (
-    (extension === "jpg" || extension === "jpeg") &&
+    (type === "image/jpeg" || name.endsWith(".jpg") || name.endsWith(".jpeg")) &&
     format === "PNG"
   ) {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/jpg-to-png";
     newExtension = "png";
-  } else if (
-    extension === "png" &&
+  }
+
+  // PNG → JPG
+  else if (
+    (type === "image/png" || name.endsWith(".png")) &&
     format === "JPG"
   ) {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/png-to-jpg";
     newExtension = "jpg";
-  } else if (
-    (extension === "jpg" ||
-      extension === "jpeg" ||
-      extension === "png") &&
+  }
+
+  // JPG / PNG → PDF
+  else if (
+    (type === "image/jpeg" ||
+      type === "image/png" ||
+      name.endsWith(".jpg") ||
+      name.endsWith(".jpeg") ||
+      name.endsWith(".png")) &&
     format === "PDF"
   ) {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/image-to-pdf";
     newExtension = "pdf";
-  } else if (
-    extension === "pdf" &&
-    format === "JPG"
-  ) {
+  }
+
+  // PDF → JPG
+  else if (name.endsWith(".pdf") && format === "JPG") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-jpg";
     newExtension = "zip";
-  } else if (
-    extension === "pdf" &&
-    format === "PNG"
-  ) {
+  }
+
+  // PDF → PNG
+  else if (name.endsWith(".pdf") && format === "PNG") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-png";
     newExtension = "zip";
-  } else if (
-    extension === "pdf" &&
-    format === "DOCX"
-  ) {
+  }
+
+  // PDF → DOCX
+  else if (name.endsWith(".pdf") && format === "DOCX") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-docx";
     newExtension = "docx";
-  } else if (
-    extension === "pdf" &&
-    format === "TXT"
-  ) {
+  }
+
+  // PDF → TXT
+  else if (name.endsWith(".pdf") && format === "TXT") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/pdf-to-txt";
     newExtension = "txt";
-  } else if (
-    extension === "docx" &&
-    format === "PDF"
-  ) {
+  }
+
+  // DOCX → PDF
+  else if (name.endsWith(".docx") && format === "PDF") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/docx-to-pdf";
     newExtension = "pdf";
-  } else if (
-    extension === "pptx" &&
-    format === "PDF"
-  ) {
+  }
+
+  // PPTX → PDF
+  else if (name.endsWith(".pptx") && format === "PDF") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/pptx-to-pdf";
     newExtension = "pdf";
-  } else if (
-    extension === "xlsx" &&
-    format === "PDF"
-  ) {
+  }
+
+  // XLSX → PDF
+  else if (name.endsWith(".xlsx") && format === "PDF") {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/xlsx-to-pdf";
     newExtension = "pdf";
-  } else if (
-    (extension === "heic" ||
-      extension === "heif") &&
+  }
+
+  // HEIC / HEIF → JPG
+  else if (
+    (name.endsWith(".heic") || name.endsWith(".heif")) &&
     format === "JPG"
   ) {
     endpoint =
       "https://dosyadonustur-backend2.onrender.com/convert/heic-to-jpg";
     newExtension = "jpg";
-  } else {
-    setError("Bu dönüşüm henüz aktif değil.");
+  }
+
+  else {
+    setError("Bu dosya türü için dönüştürme desteklenmiyor.");
     return;
   }
 
+  setConverting(true);
+  setSuccess(false);
+  setError("");
+  startProgressAnimation();
+
+  const formData = new FormData();
+  formData.append("file", file);
+
   try {
-    setConverting(true);
-    setSuccess(false);
-    setError("");
+    /*
+      XMLHttpRequest kullanıyoruz.
 
-    startProgressAnimation();
+      Bunun avantajı:
+      - Dosyanın sunucuya yüklenme yüzdesini gerçekten görebiliyoruz.
+      - Sunucudan gelen dosyanın indirilme durumunu takip edebiliyoruz.
+      - Kullanıcı artık sadece sahte şekilde 90%'da beklemiyor.
+    */
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
 
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: formData,
-    });
+      xhr.open("POST", endpoint, true);
 
-    if (!response.ok) {
-      let errorMessage =
-        "Sunucu hata verdi: " + response.status;
+      // Dönen cevabı Blob olarak al
+      xhr.responseType = "blob";
 
-      try {
-        const errorData = await response.json();
+      // 5 dakika timeout
+      xhr.timeout = 300000;
 
-        if (errorData?.error) {
-          errorMessage = errorData.error;
+      // ------------------------------------
+      // DOSYANIN SUNUCUYA YÜKLENME DURUMU
+      // ------------------------------------
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) return;
+
+        const uploadPercent =
+          (event.loaded / event.total) * 25;
+
+        setProgress((current) =>
+          Math.max(current, Math.min(25, uploadPercent))
+        );
+      };
+
+      // ------------------------------------
+      // SUNUCUDAN DOSYA GELİRKEN
+      // ------------------------------------
+      xhr.onprogress = (event) => {
+        if (!event.lengthComputable) {
+          return;
         }
-      } catch {}
 
-      throw new Error(errorMessage);
-    }
+        const downloadPercent =
+          (event.loaded / event.total) * 15;
 
-    const blob = await response.blob();
+        setProgress((current) =>
+          Math.max(
+            current,
+            Math.min(100, 85 + downloadPercent)
+          )
+        );
+      };
+
+      // ------------------------------------
+      // İŞLEM TAMAMLANDI
+      // ------------------------------------
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setProgress(100);
+          resolve(xhr.response);
+        } else {
+          // Backend JSON hata mesajı döndürürse
+          // onu okumaya çalışıyoruz.
+          if (
+            xhr.response &&
+            xhr.response.type === "application/json"
+          ) {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+              try {
+                const data = JSON.parse(reader.result);
+
+                reject(
+                  new Error(
+                    data.error ||
+                      "Dönüştürme sırasında bir hata oluştu."
+                  )
+                );
+              } catch {
+                reject(
+                  new Error(
+                    "Dönüştürme sırasında bir hata oluştu."
+                  )
+                );
+              }
+            };
+
+            reader.onerror = () => {
+              reject(
+                new Error(
+                  "Dönüştürme sırasında bir hata oluştu."
+                )
+              );
+            };
+
+            reader.readAsText(xhr.response);
+          } else {
+            reject(
+              new Error(
+                "Dönüştürme sırasında bir hata oluştu."
+              )
+            );
+          }
+        }
+      };
+
+      // ------------------------------------
+      // HATALAR
+      // ------------------------------------
+      xhr.onerror = () => {
+        reject(
+          new Error(
+            "Sunucuya bağlanırken bir hata oluştu."
+          )
+        );
+      };
+
+      xhr.ontimeout = () => {
+        reject(
+          new Error(
+            "İşlem çok uzun sürdü. Lütfen tekrar deneyin."
+          )
+        );
+      };
+
+      xhr.onabort = () => {
+        reject(
+          new Error("Dönüştürme işlemi iptal edildi.")
+        );
+      };
+
+      xhr.send(formData);
+    });
 
     stopProgressAnimation();
-    setProgress(95);
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 600);
-    });
+    // Tamamlandı
+    setProgress(100);
 
-    const url = window.URL.createObjectURL(blob);
+    // Küçük bir geçiş
+    await new Promise((resolve) =>
+      setTimeout(resolve, 300)
+    );
 
-    // Orijinal dosya adını koru
+    // ------------------------------------
+    // DOSYA ADINI OLUŞTUR
+    // ------------------------------------
+
     const originalName = file.name;
-    const lastDot = originalName.lastIndexOf(".");
+
+    const lastDot =
+      originalName.lastIndexOf(".");
 
     const baseName =
       lastDot !== -1
         ? originalName.substring(0, lastDot)
         : originalName;
 
-    const outputName = `${baseName}.${newExtension}`;
+    const newFileName =
+      `${baseName}.${newExtension}`;
+
+    // ------------------------------------
+    // DOSYAYI İNDİR
+    // ------------------------------------
+
+    const url = window.URL.createObjectURL(blob);
 
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = outputName;
+    link.download = newFileName;
 
     document.body.appendChild(link);
     link.click();
-    link.remove();
 
-    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
 
-    setProgress(100);
-
-    await new Promise((resolve) => {
-      setTimeout(resolve, 500);
-    });
+    // URL'yi temizle
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+    }, 1000);
 
     setSuccess(true);
 
-  } catch (error) {
-    console.error(error);
+    await new Promise((resolve) =>
+      setTimeout(resolve, 500)
+    );
+  } catch (err) {
+    console.error("Conversion error:", err);
 
     stopProgressAnimation();
+
     setProgress(0);
-    setSuccess(false);
 
     setError(
-      error.message ||
-      "Bir hata oluştu. Lütfen tekrar deneyin."
+      err?.message ||
+        "Dönüştürme sırasında bir hata oluştu."
     );
   } finally {
     setConverting(false);

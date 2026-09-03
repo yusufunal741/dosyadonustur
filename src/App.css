@@ -2097,3 +2097,137 @@ body.dark-mode .converting-title .hourglass-icon {
   }
 
 }
+/* =========================
+   SEO CONVERSION SECTION
+   ========================= */
+
+.conversion-seo-section {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 24px;
+}
+
+.conversion-seo-section .section-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.conversion-seo-section .section-title span {
+  display: block;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.conversion-seo-section .section-title h2 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.conversion-seo-section .section-title p {
+  margin: 0 auto;
+  max-width: 600px;
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+/* Kartların bulunduğu alan */
+
+.conversion-seo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Kart */
+
+.conversion-seo-card {
+  padding: 26px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.conversion-seo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+.conversion-seo-card h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.conversion-seo-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.7;
+}
+
+
+/* =========================
+   MOBİL
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .conversion-seo-section {
+    margin: 60px auto;
+    padding: 0 18px;
+  }
+
+  .conversion-seo-section .section-title h2 {
+    font-size: 26px;
+  }
+
+  .conversion-seo-section .section-title p {
+    font-size: 14px;
+  }
+
+  .conversion-seo-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .conversion-seo-card {
+    padding: 22px;
+  }
+
+  .conversion-seo-card h3 {
+    font-size: 17px;
+  }
+
+  .conversion-seo-card p {
+    font-size: 14px;
+  }
+}
+/* =========================
+   SEO SECTION - DARK MODE
+   ========================= */
+
+body.dark-mode .conversion-seo-section .section-title h2,
+body.dark-mode .conversion-seo-section .section-title p,
+body.dark-mode .conversion-seo-card h3,
+body.dark-mode .conversion-seo-card p {
+  color: #ffffff;
+}
+
+body.dark-mode .conversion-seo-section .section-title p,
+body.dark-mode .conversion-seo-card p {
+  opacity: 0.75;
+}
+
+body.dark-mode .conversion-seo-card {
+  background: #1f1f2b;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .conversion-seo-card:hover {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}

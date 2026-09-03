@@ -1184,6 +1184,76 @@ function MainApp() {
           </div>
 
         </section>
+        <section className="conversion-seo-section">
+
+  <div className="section-title">
+
+    <span>🔄</span>
+
+    <h2>
+      Online Dosya Dönüştürme
+    </h2>
+
+    <p>
+      Dosyalarını istediğin formata hızlı ve kolay
+      bir şekilde dönüştür.
+    </p>
+
+  </div>
+
+  <div className="conversion-seo-grid">
+
+    <div className="conversion-seo-card">
+      <h3>PDF Dönüştürme</h3>
+      <p>
+        PDF dosyalarını JPG, PNG, Word ve TXT
+        formatlarına kolayca dönüştür.
+      </p>
+    </div>
+
+    <div className="conversion-seo-card">
+      <h3>Word PDF Dönüştürme</h3>
+      <p>
+        DOCX belgelerini hızlı ve kolay şekilde
+        PDF formatına çevir.
+      </p>
+    </div>
+
+    <div className="conversion-seo-card">
+      <h3>JPG PNG Dönüştürme</h3>
+      <p>
+        JPG görsellerini PNG formatına veya PNG
+        görsellerini JPG formatına dönüştür.
+      </p>
+    </div>
+
+    <div className="conversion-seo-card">
+      <h3>HEIC JPG Dönüştürme</h3>
+      <p>
+        iPhone ve diğer cihazlardan gelen HEIC
+        görsellerini JPG formatına çevir.
+      </p>
+    </div>
+
+    <div className="conversion-seo-card">
+      <h3>PowerPoint PDF Dönüştürme</h3>
+      <p>
+        PPTX sunumlarını kolayca PDF formatına
+        dönüştür.
+      </p>
+    </div>
+
+    <div className="conversion-seo-card">
+      <h3>Excel PDF Dönüştürme</h3>
+      <p>
+        XLSX Excel dosyalarını hızlı şekilde
+        PDF formatına dönüştür.
+      </p>
+    </div>
+
+  </div>
+
+</section>
 
         <section
           className="about-section"

@@ -320,8 +320,9 @@ app.post(
       }
 
       const pngBuffer = await sharp(req.file.buffer)
-        .png()
-        .toBuffer();
+  .rotate()
+  .png()
+  .toBuffer();
 
       res.set({
         "Content-Type": "image/png",
@@ -356,8 +357,9 @@ app.post(
       }
 
       const jpgBuffer = await sharp(req.file.buffer)
-        .jpeg()
-        .toBuffer();
+  .rotate()
+  .jpeg()
+  .toBuffer();
 
       res.set({
         "Content-Type": "image/jpeg",
@@ -399,10 +401,11 @@ app.post(
       console.log("=================================");
 
       const outputBuffer = await sharp(req.file.buffer)
-        .jpeg({
-          quality: 90,
-        })
-        .toBuffer();
+  .rotate()
+  .jpeg({
+    quality: 90,
+  })
+  .toBuffer();
 
       console.log("HEIC -> JPG BAŞARILI!");
       console.log(
@@ -460,8 +463,9 @@ app.post(
       }
 
       const imageBuffer = await sharp(req.file.buffer)
-        .jpeg()
-        .toBuffer();
+  .rotate()
+  .jpeg()
+  .toBuffer();
 
       const metadata = await sharp(imageBuffer).metadata();
 
